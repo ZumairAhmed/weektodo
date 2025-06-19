@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      input[type="date"], input[type="time"],
+      input[type="text"],
+      select.js-category-input, select.js-priority-input {
+        background: #fff !important;
+        color: #333 !important;
+        border: 1px solid #333;
+        font-size: 1rem;
+      }
+      input[type="date"]:focus, input[type="time"]:focus,
+      input[type="text"]:focus,
+      select.js-category-input:focus, select.js-priority-input:focus {
+        background: #fff !important;
+        color: #333 !important;
+        border: 1.5px solid #6d28d9;
+      }
+      @media (max-width: 640px) {
+        .container {
+          padding: 0.5rem !important;
+          max-width: 100vw !important;
+        }
+        .flex, .grid {
+          flex-direction: column !important;
+          grid-template-columns: 1fr !important;
+        }
+        .space-x-4, .gap-4, .mb-8, .mb-6, .py-8, .py-4, .px-4 {
+          margin: 0 !important;
+          padding: 0.5rem !important;
+        }
+        h1 {
+          font-size: 2rem !important;
+          text-align: center !important;
+        }
+        button, input, select {
+          font-size: 1rem !important;
+          padding: 0.75rem 1rem !important;
+          min-width: 44px;
+          min-height: 44px;
+        }
+        .rounded-lg, .rounded-full {
+          border-radius: 0.75rem !important;
+        }
+        .shadow-lg, .shadow-md {
+          box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-md">
+      <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <i class="fa-solid fa-clipboard-list" style="font-size: 64px; color: #8b5cf6;"></i>
+          <div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-wider">Todo List</h1>
+            <p class="text-sm text-gray-600">Plan Your Day Efficiently</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <button id="settings-btn" title="Settings" class="text-gray-600 hover:text-purple-700 focus:outline-none">
+            <i class="fa-solid fa-gear text-2xl"></i>
+          </button>
+          <a href="index.html" class="inline-flex items-center px-6 py-3 text-lg font-semibold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white rounded-full shadow-lg hover:from-pink-500 hover:to-indigo-500 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-purple-300 transition-all duration-300 ml-2">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            <span>Back to Main</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+      <!-- Calendar Weekdays Bar -->
+      <div id="calendar-bar" class="flex justify-between items-center bg-white rounded-lg shadow p-4 mb-6">
+        <!-- JS will populate weekdays here -->
+      </div>
+
+      <!-- Add Task Form -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <input
+            type="text"
+            placeholder="Add a new task..."
+            class="js-name-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            maxlength="120"
+          />
+          <input
+            type="date"
+            class="js-date-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <input
+            type="time"
+            class="js-time-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+          <select class="js-category-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <option value="">Select Category</option>
+            <option value="work">Work</option>
+            <option value="personal">Personal</option>
+            <option value="shopping">Shopping</option>
+            <option value="health">Health</option>
+            <option value="education">Education</option>
+            <option value="other">Other</option>
+          </select>
+          <select class="js-priority-input w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <option value="">Select Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 mt-4">
+          <button class="js-cancel-button hidden px-4 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+            <i class="fa-solid fa-times mr-1"></i> Cancel
+          </button>
+          <button class="js-add-button px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            <i class="fa-solid fa-plus mr-1"></i> Add Task
+          </button>
+        </div>
+      </div>
+
+      <!-- Task Management Tools -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+          <div class="flex flex-wrap items-center gap-4">
+            <button onclick="sortTodos('category')" class="px-4 py-2 text-white bg-black rounded-lg hover:bg-gray-800 transition-colors">
+              <i class="fa-solid fa-sort mr-1"></i> Sort by Category
+            </button>
+            <button onclick="sortTodos('priority')" class="px-4 py-2 text-white bg-black rounded-lg hover:bg-gray-800 transition-colors">
+              <i class="fa-solid fa-sort mr-1"></i> Sort by Priority
+            </button>
+            <select onchange="filterTodos()" class="js-filter-input px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="all">All Tasks</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="flex items-center gap-4">
+            <!-- The generate tasks button will be inserted here by JavaScript -->
+            <div class="task-counter-button px-4 py-2 bg-purple-100 text-purple-700 rounded-lg">
+              Tasks: 0
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div class="js-add-html space-y-4"></div>
+
+      <!-- Delete All Tasks Button -->
+      <button id="delete-all-btn" onclick="deleteAllTasks()" class="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg shadow-lg hover:bg-red-700 transition-colors block mx-auto">
+        <i class="fa-solid fa-trash mr-2"></i>Delete All Tasks
+      </button>
+
+      <!-- Success Notification -->
+      <div id="js-success-notification" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg hidden">
+        <p class="flex items-center">
+          <i class="fa-solid fa-check-circle mr-2"></i>
+          Task completed successfully! 🎉
+        </p>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-auto">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="mb-4 md:mb-0">
+            &copy; <span class="year"></span> Made by SLIATE Students. All rights reserved.
+          </p>
+          <div class="flex space-x-6">
+            <a href="https://www.instagram.com/sliateapi2025?igsh=MXZucWQ0ZzB4cW82ag==" target="_blank" class="transition-colors duration-300 hover:text-white hover:bg-gradient-to-tr hover:from-yellow-400 hover:via-pink-500 hover:to-purple-600 p-2 rounded-full">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100074825684170&mibeZbWKwLxtid=" target="_blank" class="transition-colors duration-300 hover:text-white hover:bg-blue-600 p-2 rounded-full">
+              <i class="fa-brands fa-facebook"></i>
+            </a>
+            <a href="https://github.com/ZumairAhmed" target="_blank" class="transition-colors duration-300 hover:text-gray-900 hover:bg-white p-2 rounded-full">
+              <i class="fa-brands fa-github"></i>
+            </a>
+            <a href="https://www.youtube.com/" target="_blank" class="transition-colors duration-300 hover:text-white hover:bg-red-600 p-2 rounded-full">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+      <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <button id="close-settings" class="absolute top-2 right-2 text-gray-400 hover:text-red-500 text-2xl">&times;</button>
+        <h2 class="text-xl font-bold mb-4 text-purple-700 flex items-center"><i class="fa-solid fa-gear mr-2"></i>Settings</h2>
+        <div class="flex border-b mb-4">
+          <button class="settings-tab px-4 py-2 text-gray-600 hover:text-purple-700 focus:outline-none" data-tab="general">General</button>
+          <button class="settings-tab px-4 py-2 text-gray-600 hover:text-purple-700 focus:outline-none" data-tab="display">Display</button>
+          <button class="settings-tab px-4 py-2 text-gray-600 hover:text-purple-700 focus:outline-none" data-tab="language">Language</button>
+          <button class="settings-tab px-4 py-2 text-gray-600 hover:text-purple-700 focus:outline-none" data-tab="notification">Notification</button>
+        </div>
+        <div id="settings-content">
+          <!-- JS will populate tab content here -->
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Settings Modal Logic
+      const settingsBtn = document.getElementById('settings-btn');
+      const settingsModal = document.getElementById('settings-modal');
+      const closeSettings = document.getElementById('close-settings');
+      const settingsTabs = document.querySelectorAll('.settings-tab');
+      const settingsContent = document.getElementById('settings-content');
+
+      // Settings state
+      const settings = JSON.parse(localStorage.getItem('todoSettings')) || {
+        showCompleted: true,
+        theme: 'light',
+        language: 'en',
+        notifications: false
+      };
+
+      function saveSettings() {
+        localStorage.setItem('todoSettings', JSON.stringify(settings));
+      }
+
+      const tabContents = {
+        general: `<div>
+          <h3 class='font-semibold mb-2'>General Settings</h3>
+          <label class='flex items-center space-x-2'>
+            <input type='checkbox' id='show-completed-toggle' ${settings.showCompleted ? 'checked' : ''}>
+            <span>Show completed tasks</span>
+          </label>
+        </div>`,
+        display: `<div>
+          <h3 class='font-semibold mb-2'>Display Settings</h3>
+          <label class='flex items-center space-x-2'>
+            <input type='checkbox' id='theme-toggle' ${settings.theme === 'dark' ? 'checked' : ''}>
+            <span>Dark mode</span>
+          </label>
+        </div>`,
+        language: `<div>
+          <h3 class='font-semibold mb-2'>Language Settings</h3>
+          <select id='settings-language-select' class='border border-gray-300 rounded px-2 py-1'>
+            <option value='en' ${settings.language === 'en' ? 'selected' : ''}>English</option>
+            <option value='ta' ${settings.language === 'ta' ? 'selected' : ''}>தமிழ் (Tamil)</option>
+            <option value='si' ${settings.language === 'si' ? 'selected' : ''}>සිංහල (Sinhala)</option>
+            <option value='ja' ${settings.language === 'ja' ? 'selected' : ''}>日本語 (Japanese)</option>
+            <option value='es' ${settings.language === 'es' ? 'selected' : ''}>Español (Spanish)</option>
+            <option value='ar' ${settings.language === 'ar' ? 'selected' : ''}>العربية (Arabic)</option>
+            <option value='fr' ${settings.language === 'fr' ? 'selected' : ''}>Français (French)</option>
+            <option value='de' ${settings.language === 'de' ? 'selected' : ''}>Deutsch (German)</option>
+            <option value='zh' ${settings.language === 'zh' ? 'selected' : ''}>中文 (Chinese)</option>
+            <option value='hi' ${settings.language === 'hi' ? 'selected' : ''}>हिन्दी (Hindi)</option>
+            <option value='ru' ${settings.language === 'ru' ? 'selected' : ''}>Русский (Russian)</option>
+            <option value='pt' ${settings.language === 'pt' ? 'selected' : ''}>Português (Portuguese)</option>
+            <option value='ko' ${settings.language === 'ko' ? 'selected' : ''}>한국어 (Korean)</option>
+            <option value='it' ${settings.language === 'it' ? 'selected' : ''}>Italiano (Italian)</option>
+            <option value='tr' ${settings.language === 'tr' ? 'selected' : ''}>Türkçe (Turkish)</option>
+            <option value='uk' ${settings.language === 'uk' ? 'selected' : ''}>Українська (Ukrainian)</option>
+            <option value='pl' ${settings.language === 'pl' ? 'selected' : ''}>Polski (Polish)</option>
+            <option value='nl' ${settings.language === 'nl' ? 'selected' : ''}>Nederlands (Dutch)</option>
+            <option value='sv' ${settings.language === 'sv' ? 'selected' : ''}>Svenska (Swedish)</option>
+          </select>
+        </div>`,
+        notification: `<div>
+          <h3 class='font-semibold mb-2'>Notification Settings</h3>
+          <label class='flex items-center space-x-2'>
+            <input type='checkbox' id='notifications-toggle' ${settings.notifications ? 'checked' : ''}>
+            <span>Enable notifications</span>
+          </label>
+          <p class='text-xs text-gray-500 mt-2'>Browser permission required for notifications.</p>
+        </div>`
+      };
+
+      settingsBtn.addEventListener('click', () => {
+        settingsModal.classList.remove('hidden');
+        showTab('general');
+      });
+      closeSettings.addEventListener('click', () => {
+        settingsModal.classList.add('hidden');
+      });
+      settingsTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+          showTab(this.getAttribute('data-tab'));
+          settingsTabs.forEach(t => t.classList.remove('border-b-2', 'border-purple-600', 'text-purple-700', 'font-bold'));
+          this.classList.add('border-b-2', 'border-purple-600', 'text-purple-700', 'font-bold');
+        });
+      });
+      function showTab(tab) {
+        settingsContent.innerHTML = tabContents[tab] || '';
+        // Wire up controls for each tab
+        if (tab === 'general') {
+          document.getElementById('show-completed-toggle').onchange = function() {
+            settings.showCompleted = this.checked;
+            saveSettings();
+            updateTodoList();
+          };
+        } else if (tab === 'display') {
+          document.getElementById('theme-toggle').onchange = function() {
+            settings.theme = this.checked ? 'dark' : 'light';
+            saveSettings();
+            applyTheme();
+          };
+        } else if (tab === 'language') {
+          document.getElementById('settings-language-select').onchange = function() {
+            settings.language = this.value;
+            saveSettings();
+            applyLanguage();
+          };
+        } else if (tab === 'notification') {
+          document.getElementById('notifications-toggle').onchange = function() {
+            settings.notifications = this.checked;
+            saveSettings();
+            if (this.checked && Notification && Notification.permission !== 'granted') {
+              Notification.requestPermission();
+            }
+          };
+        }
+      }
+
+      function applyTheme() {
+        if (settings.theme === 'dark') {
+          document.body.classList.add('bg-gray-900', 'text-white');
+          document.body.classList.remove('bg-gray-50', 'text-gray-800');
+        } else {
+          document.body.classList.remove('bg-gray-900', 'text-white');
+          document.body.classList.add('bg-gray-50', 'text-gray-800');
+        }
+      }
+
+      function applyLanguage() {
+        const h1 = document.querySelector('h1');
+        const p = document.querySelector('header p');
+        if(settings.language === 'en') {
+          h1.textContent = 'Todo List';
+          p.textContent = 'Plan Your Day Efficiently';
+        } else if(settings.language === 'ta') {
+          h1.textContent = 'பணிகள் பட்டியல்';
+          p.textContent = 'உங்கள் நாளை திறமையாக திட்டமிடுங்கள்';
+        } else if(settings.language === 'si') {
+          h1.textContent = 'කරුණු ලැයිස්තුව';
+          p.textContent = 'ඔබේ දිනය කාර්යක්ෂමව සැලසුම් කරන්න';
+        } else if(settings.language === 'ja') {
+          h1.textContent = 'やることリスト';
+          p.textContent = 'あなたの一日を効率的に計画しましょう';
+        } else if(settings.language === 'es') {
+          h1.textContent = 'Lista de Tareas';
+          p.textContent = 'Organiza tu día fácilmente';
+        } else if(settings.language === 'ar') {
+          h1.textContent = 'قائمة المهام';
+          p.textContent = 'خطط ليومك بكفاءة';
+        } else {
+          h1.textContent = 'Todo List';
+          p.textContent = 'Plan Your Day Efficiently';
+        }
+      }
+
+      // Filter completed tasks if setting is off
+      const origFilterTodos = filterTodos;
+      filterTodos = function(todos) {
+        let filtered = origFilterTodos(todos);
+        if (!settings.showCompleted) {
+          filtered = filtered.filter(todo => !todo.completed);
+        }
+        return filtered;
+      }
+
+      // Apply theme and language on load
+      applyTheme();
+      applyLanguage();
+    });
+    </script>
+  </body>
+</html>
